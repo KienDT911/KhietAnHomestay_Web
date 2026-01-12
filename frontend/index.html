@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khiết An Homestay - Your Home Away From Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-text">Khiết An</span>
+                <span class="logo-sub">HOMESTAY</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#rooms" class="nav-link">Rooms</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <img src="assets/images/logo.png" alt="Khiết An Homestay logo" class="hero-logo">
+            <h1 class="hero-title">Khiết An</h1>
+            <div class="hero-homestay">HOMESTAY</div>
+            <p class="hero-subtitle">Your Peaceful Retreat. Your Home Away From Home.</p>
+            <a href="#rooms" class="btn-primary">Explore Our Rooms</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Welcome to Khiết An</h2>
+                <div class="title-underline"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-intro">
+                        Nestled in a serene neighborhood, Khiết An Homestay offers more than just accommodation—we provide a warm embrace of genuine hospitality and comfort.
+                    </p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><img src="assets/icons/cozy.svg" alt="Cozy Atmosphere"></div>
+                            <h3>Cozy Atmosphere</h3>
+                            <p>Every corner designed for your comfort and relaxation</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><img src="assets/icons/nature.svg" alt="Natural Setting"></div>
+                            <h3>Natural Setting</h3>
+                            <p>Surrounded by peaceful greenery and fresh air</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><img src="assets/icons/heart.svg" alt="Warm Hospitality"></div>
+                            <h3>Warm Hospitality</h3>
+                            <p>Treated like family from the moment you arrive</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><img src="assets/icons/coffee.svg" alt="Homely Comforts"></div>
+                            <h3>Homely Comforts</h3>
+                            <p>All amenities you need for a comfortable stay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section id="rooms" class="rooms">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Rooms</h2>
+                <div class="title-underline"></div>
+                <p class="section-subtitle">Choose your perfect sanctuary</p>
+            </div>
+            <div class="rooms-grid" id="rooms-grid">
+                <!-- Rooms will be loaded dynamically from MongoDB -->
+                <div class="loading-rooms">
+                    <p>Loading rooms...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Room Calendar Modal -->
+    <div id="room-calendar-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content calendar-modal">
+            <button class="modal-close" onclick="closeCalendarModal()">&times;</button>
+            <div class="modal-header">
+                <h2 id="modal-room-name">Room Calendar</h2>
+                <p id="modal-room-price"></p>
+            </div>
+            <div class="calendar-container">
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">&lt;</button>
+                    <h3 id="calendar-month-year"></h3>
+                    <button class="calendar-nav-btn" onclick="changeMonth(1)">&gt;</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-header">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div id="calendar-days" class="calendar-days"></div>
+                </div>
+                <div class="calendar-legend">
+                    <span class="legend-item"><span class="legend-dot available"></span> Available</span>
+                    <span class="legend-item"><span class="legend-dot booked"></span> Booked</span>
+                    <span class="legend-item"><span class="legend-dot today"></span> Today</span>
+                </div>
+            </div>
+            <div id="booking-details" class="booking-details" style="display: none;">
+                <h4>Booking Information</h4>
+                <p id="booking-guest"></p>
+                <p id="booking-dates"></p>
+            </div>
+        </div>
+    </div>
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="title-underline"></div>
+                <p class="section-subtitle">We'd love to host you!</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <div class="contact-icon"><img src="assets/icons/location.svg" alt="Address"></div>
+                        <h3>Address</h3>
+                        <p>123 Peaceful Street<br>Garden District<br>Hanoi, Vietnam</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon"><img src="assets/icons/phone.svg" alt="Phone"></div>
+                        <h3>Phone</h3>
+                        <p>+84 123 456 789</p>
+                        <p class="contact-note">Available 24/7</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon"><img src="assets/icons/email.svg" alt="Email"></div>
+                        <h3>Email</h3>
+                        <p>hello@khietanhomestay.com</p>
+                        <p class="contact-note">We reply within 24 hours</p>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon"><img src="assets/icons/clock.svg" alt="Check-in/Check-out"></div>
+                        <h3>Check-in/Check-out</h3>
+                        <p>Check-in: 2:00 PM<br>Check-out: 12:00 PM</p>
+                    </div>
+                </div>
+                <div class="contact-form-container">
+                    <h3>Send us a message</h3>
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Khiết An</span>
+                    <span class="logo-sub">HOMESTAY</span>
+                    <p class="footer-tagline">Come as a guest. Leave as family.</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Instagram</a>
+                        <a href="#" class="social-link">TripAdvisor</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Khiết An Homestay. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/room-api-client.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
