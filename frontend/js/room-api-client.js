@@ -298,27 +298,63 @@ function closeCalendarModal() {
 }
 
 /**
- * Change calendar month
+ * Change calendar month with smooth slide animation
  */
 function changeMonth(delta) {
+    const slider = document.getElementById('calendar-slider');
+    
+    // Prevent multiple clicks during animation
+    if (slider.classList.contains('sliding-left') || slider.classList.contains('sliding-right')) {
+        return;
+    }
+    
+    // Update the calendar data first
     currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
     renderCalendar();
+    
+    // Then apply the slide animation
+    if (delta > 0) {
+        slider.classList.add('sliding-left');
+    } else {
+        slider.classList.add('sliding-right');
+    }
+    
+    // Remove animation class after it completes
+    setTimeout(() => {
+        slider.classList.remove('sliding-left', 'sliding-right');
+    }, 500);
 }
 
 /**
- * Render calendar for current month
+ * Render dual calendar (left month and right month)
  */
 function renderCalendar() {
     if (!currentRoomData) return;
     
-    const year = currentCalendarDate.getFullYear();
-    const month = currentCalendarDate.getMonth();
-    
-    // Update month/year display
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
                         'July', 'August', 'September', 'October', 'November', 'December'];
-    document.getElementById('calendar-month-year').textContent = `${monthNames[month]} ${year}`;
     
+    // Left calendar - current month
+    const leftYear = currentCalendarDate.getFullYear();
+    const leftMonth = currentCalendarDate.getMonth();
+    
+    document.getElementById('calendar-month-left').textContent = `${monthNames[leftMonth]} ${leftYear}`;
+    renderMonthDays('calendar-days-left', leftYear, leftMonth);
+    
+    // Right calendar - next month
+    const rightDate = new Date(currentCalendarDate);
+    rightDate.setMonth(rightDate.getMonth() + 1);
+    const rightYear = rightDate.getFullYear();
+    const rightMonth = rightDate.getMonth();
+    
+    document.getElementById('calendar-month-right').textContent = `${monthNames[rightMonth]} ${rightYear}`;
+    renderMonthDays('calendar-days-right', rightYear, rightMonth);
+}
+
+/**
+ * Render days for a specific month into a container
+ */
+function renderMonthDays(containerId, year, month) {
     // Get first day and number of days in month
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -327,7 +363,7 @@ function renderCalendar() {
     const bookedDates = getBookedDatesForMonth(year, month);
     
     // Build calendar HTML
-    const calendarDays = document.getElementById('calendar-days');
+    const calendarDays = document.getElementById(containerId);
     let html = '';
     
     // Add empty cells for days before first day of month

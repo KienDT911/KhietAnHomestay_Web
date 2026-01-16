@@ -56,6 +56,14 @@ body {
     padding: 0 20px;
 }
 
+/* ===== Birthstone Text Utility ===== */
+.birthstone-text {
+    font-family: var(--font-title);
+    font-style: normal;
+    font-size: 1.15em;
+    letter-spacing: 0.5px;
+}
+
 /* ===== Navigation Bar ===== */
 .navbar {
     position: fixed;
@@ -846,8 +854,8 @@ body {
 .modal-content {
     background: white;
     border-radius: 16px;
-    max-width: 500px;
-    width: 90%;
+    max-width: 750px;
+    width: 95%;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
@@ -908,39 +916,78 @@ body {
 }
 
 /* ===== Calendar Container ===== */
-.calendar-container {
-    padding: 20px 24px;
-}
-
-.calendar-nav {
+.calendar-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    gap: 10px;
+    padding: 20px 15px;
 }
 
-.calendar-nav h3 {
-    margin: 0;
-    font-size: 18px;
+.dual-calendar-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.calendar-slider {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.calendar-slider.sliding-left {
+    animation: slideLeftSmooth 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.calendar-slider.sliding-right {
+    animation: slideRightSmooth 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes slideLeftSmooth {
+    0% { transform: translateX(50%); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes slideRightSmooth {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+}
+
+.calendar-month {
+    flex: 1;
+    min-width: 280px;
+    flex-shrink: 0;
+}
+
+.calendar-month-title {
+    text-align: center;
+    margin: 0 0 15px 0;
+    font-size: 16px;
     color: #333;
+    font-weight: 600;
 }
 
 .calendar-nav-btn {
     background: var(--sage-green);
     color: white;
     border: none;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
 .calendar-nav-btn:hover {
     background: var(--dark-green);
     transform: scale(1.1);
+}
+
+.calendar-nav-btn:active {
+    transform: scale(0.95);
 }
 
 .calendar-grid {
@@ -1037,7 +1084,7 @@ body {
     display: flex;
     gap: 20px;
     justify-content: center;
-    margin-top: 16px;
+    padding: 16px 20px 20px;
     padding-top: 16px;
     border-top: 1px solid #eee;
 }
@@ -1120,6 +1167,44 @@ body {
     .modal-content {
         width: 95%;
         margin: 10px;
+        max-width: 95%;
+    }
+    
+    .calendar-wrapper {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .calendar-slider {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .calendar-month {
+        min-width: 100%;
+    }
+    
+    .calendar-nav-btn.nav-prev,
+    .calendar-nav-btn.nav-next {
+        display: none;
+    }
+    
+    .dual-calendar-container::before,
+    .dual-calendar-container::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: var(--sage-green);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        z-index: 10;
     }
     
     .calendar-day {
@@ -1136,5 +1221,32 @@ body {
     .calendar-legend {
         flex-wrap: wrap;
         gap: 12px;
+    }
+}
+
+/* Mobile navigation buttons for calendar */
+@media (max-width: 768px) {
+    .calendar-wrapper {
+        position: relative;
+    }
+    
+    .calendar-wrapper .nav-prev,
+    .calendar-wrapper .nav-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        display: flex;
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .calendar-wrapper .nav-prev {
+        left: 5px;
+    }
+    
+    .calendar-wrapper .nav-next {
+        right: 5px;
     }
 }

@@ -48,7 +48,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <p class="about-intro">
-                        Nestled in a serene neighborhood, Khiết An Homestay offers more than just accommodation—we provide a warm embrace of genuine hospitality and comfort.
+                        Nestled in a serene neighborhood, <span class="birthstone-text">Khiết An</span> Homestay offers more than just accommodation—we provide a warm embrace of genuine hospitality and comfort.
                     </p>
                     <div class="features-grid">
                         <div class="feature-card">
@@ -102,22 +102,37 @@
                 <h2 id="modal-room-name">Room Calendar</h2>
                 <p id="modal-room-price"></p>
             </div>
-            <div class="calendar-container">
-                <div class="calendar-nav">
-                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">&lt;</button>
-                    <h3 id="calendar-month-year"></h3>
-                    <button class="calendar-nav-btn" onclick="changeMonth(1)">&gt;</button>
-                </div>
-                <div class="calendar-grid">
-                    <div class="calendar-header">
-                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            <div class="calendar-wrapper">
+                <button class="calendar-nav-btn nav-prev" onclick="changeMonth(-1)">&lt;</button>
+                <div class="dual-calendar-container">
+                    <div class="calendar-slider" id="calendar-slider">
+                        <!-- Left Calendar -->
+                        <div class="calendar-month" id="calendar-left">
+                            <h3 class="calendar-month-title" id="calendar-month-left"></h3>
+                            <div class="calendar-grid">
+                                <div class="calendar-header">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div id="calendar-days-left" class="calendar-days"></div>
+                            </div>
+                        </div>
+                        <!-- Right Calendar -->
+                        <div class="calendar-month" id="calendar-right">
+                            <h3 class="calendar-month-title" id="calendar-month-right"></h3>
+                            <div class="calendar-grid">
+                                <div class="calendar-header">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div id="calendar-days-right" class="calendar-days"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="calendar-days" class="calendar-days"></div>
                 </div>
-                <div class="calendar-legend">
-                    <span class="legend-item"><span class="legend-dot available"></span> Available</span>
-                    <span class="legend-item"><span class="legend-dot today"></span> Today</span>
-                </div>
+                <button class="calendar-nav-btn nav-next" onclick="changeMonth(1)">&gt;</button>
+            </div>
+            <div class="calendar-legend">
+                <span class="legend-item"><span class="legend-dot available"></span> Available</span>
+                <span class="legend-item"><span class="legend-dot today"></span> Today</span>
             </div>
         </div>
     </div>
