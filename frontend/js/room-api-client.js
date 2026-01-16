@@ -355,12 +355,12 @@ function renderCalendar() {
         
         if (booking) {
             classes += ' booked';
-            title = `Booked: ${booking.guestName || 'Guest'}`;
+            title = 'Booked';
         } else if (dateStr >= todayStr) {
             classes += ' available';
         }
         
-        html += `<div class="${classes}" data-date="${dateStr}" title="${title}" onclick="showBookingDetails('${dateStr}')">${day}</div>`;
+        html += `<div class="${classes}" data-date="${dateStr}" title="${title}">${day}</div>`;
     }
     
     calendarDays.innerHTML = html;
@@ -392,31 +392,6 @@ function getBookedDatesForMonth(year, month) {
     });
     
     return bookedDates;
-}
-
-/**
- * Show booking details for a specific date
- */
-function showBookingDetails(dateStr) {
-    if (!currentRoomData || !currentRoomData.bookedIntervals) {
-        document.getElementById('booking-details').style.display = 'none';
-        return;
-    }
-    
-    // Find booking for this date
-    const booking = currentRoomData.bookedIntervals.find(interval => {
-        return dateStr >= interval.checkIn && dateStr < interval.checkOut;
-    });
-    
-    const detailsDiv = document.getElementById('booking-details');
-    
-    if (booking) {
-        document.getElementById('booking-guest').textContent = `Guest: ${booking.guestName || 'N/A'}`;
-        document.getElementById('booking-dates').textContent = `${booking.checkIn} → ${booking.checkOut}`;
-        detailsDiv.style.display = 'block';
-    } else {
-        detailsDiv.style.display = 'none';
-    }
 }
 
 // Close modal when clicking outside
