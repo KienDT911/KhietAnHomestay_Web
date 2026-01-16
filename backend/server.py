@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -21,8 +21,11 @@ class MongoJSONEncoder(json.JSONEncoder):
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
+# Get the frontend directory path (relative to backend folder)
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
+
+# Initialize Flask app with static folder pointing to frontend
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 
 # Configure CORS for global access
 CORS(app, resources={
@@ -151,7 +154,12 @@ def save_fallback_data():
 
 @app.route('/', methods=['GET'])
 def root():
-    """Root endpoint - API info"""
+    """Serve the frontend homepage"""
+    return send_from_directory(FRONTEND_DIR, 'index.html')
+
+@app.route('/api-info', methods=['GET'])
+def api_info():
+    """API info endpoint"""
     return jsonify({
         'success': True,
         'message': 'KhietAn Homestay API is running',
@@ -163,6 +171,23 @@ def root():
             'admin_rooms': '/backend/api/admin/rooms'
         }
     }), 200
+
+# ===== Serve Frontend Static Files =====
+
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    """Serve CSS files"""
+    return send_from_directory(os.path.join(FRONTEND_DIR, 'css'), filename)
+
+@app.route('/js/<path:filename>')
+def serve_js(filename):
+    """Serve JavaScript files"""
+    return send_from_directory(os.path.join(FRONTEND_DIR, 'js'), filename)
+
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    """Serve asset files (images, icons, etc.)"""
+    return send_from_directory(os.path.join(FRONTEND_DIR, 'assets'), filename)
 
 # ===== Public Room API Endpoints (Read-Only) =====
 

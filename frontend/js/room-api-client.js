@@ -3,10 +3,10 @@
  * Fetches room data from the public API with MongoDB/Fallback support
  */
 
-// API URLs - Production backend on Render
+// API URLs - Uses same origin since frontend is served by Flask
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://127.0.0.1:5000'
-    : 'https://khietanhomestay-web.onrender.com';
+    : '';  // Empty string = same origin (both frontend and API served from Render)
 
 const HOMEPAGE_API_URL = `${API_BASE_URL}/backend/api/rooms`;
 const HEALTH_CHECK_URL = `${API_BASE_URL}/backend/health`;
