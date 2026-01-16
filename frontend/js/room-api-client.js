@@ -3,10 +3,10 @@
  * Fetches room data from the public API with MongoDB/Fallback support
  */
 
-// API URLs - Change 'YOUR_RENDER_URL' to your actual Render backend URL after deployment
+// API URLs - Production backend on Render
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://127.0.0.1:5000'
-    : 'https://YOUR_RENDER_URL.onrender.com'; // Replace with your Render backend URL
+    : 'https://khietanhomestay-web.onrender.com';
 
 const HOMEPAGE_API_URL = `${API_BASE_URL}/backend/api/rooms`;
 const HEALTH_CHECK_URL = `${API_BASE_URL}/backend/health`;
