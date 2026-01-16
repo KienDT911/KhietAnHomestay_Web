@@ -3,8 +3,11 @@
  * Fetches room data from the public API with MongoDB/Fallback support
  */
 
-// API URLs - Change these based on your environment
-const API_BASE_URL = 'http://127.0.0.1:5000';
+// API URLs - Change 'YOUR_RENDER_URL' to your actual Render backend URL after deployment
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:5000'
+    : 'https://YOUR_RENDER_URL.onrender.com'; // Replace with your Render backend URL
+
 const HOMEPAGE_API_URL = `${API_BASE_URL}/backend/api/rooms`;
 const HEALTH_CHECK_URL = `${API_BASE_URL}/backend/health`;
 
