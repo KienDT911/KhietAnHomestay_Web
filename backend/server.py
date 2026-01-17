@@ -187,7 +187,18 @@ def serve_js(filename):
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     """Serve asset files (images, icons, etc.)"""
-    return send_from_directory(os.path.join(FRONTEND_DIR, 'assets'), filename)
+    assets_path = os.path.join(FRONTEND_DIR, 'assets')
+    file_path = os.path.join(assets_path, filename)
+    
+    # Check if file exists
+    if os.path.exists(file_path):
+        # Get the directory and filename
+        directory = os.path.dirname(file_path)
+        file_name = os.path.basename(file_path)
+        return send_from_directory(directory, file_name)
+    
+    # If not found, return 404
+    return "File not found", 404
 
 # ===== Public Room API Endpoints (Read-Only) =====
 

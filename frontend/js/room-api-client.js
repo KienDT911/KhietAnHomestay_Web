@@ -445,6 +445,40 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// Add touch swipe support for mobile calendar navigation
+let touchStartX = 0;
+let touchEndX = 0;
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swiped left - go to next month
+            changeMonth(1);
+        } else {
+            // Swiped right - go to previous month
+            changeMonth(-1);
+        }
+    }
+}
+
+// Attach swipe listeners to calendar slider
+window.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('calendar-slider');
+    if (slider) {
+        slider.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        slider.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+    }
+});
+
 /**
  * Example: Get room details for display
  */
