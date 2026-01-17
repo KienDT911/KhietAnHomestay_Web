@@ -298,57 +298,93 @@ function closeCalendarModal() {
 }
 
 /**
- * Change calendar month with smooth slide animation
+ * Change calendar month with smooth carousel animation
  */
 function changeMonth(delta) {
     const slider = document.getElementById('calendar-slider');
     
     // Prevent multiple clicks during animation
-    if (slider.classList.contains('sliding-left') || slider.classList.contains('sliding-right')) {
+    if (slider.hasAttribute('data-animating')) {
         return;
     }
     
-    // Update the calendar data first
-    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
-    renderCalendar();
+    slider.setAttribute('data-animating', 'true');
     
-    // Then apply the slide animation
+    // Apply smooth transform transition
+    // Each month is 25% width, so we shift by 25% per month
     if (delta > 0) {
-        slider.classList.add('sliding-left');
+        // NEXT: slide left from -25% to -50%
+        slider.style.transform = 'translateX(-50%)';
     } else {
-        slider.classList.add('sliding-right');
+        // PREV: slide right from -25% to 0%
+        slider.style.transform = 'translateX(0%)';
     }
     
-    // Remove animation class after it completes
+    // After animation completes, update months and reset to center position
     setTimeout(() => {
-        slider.classList.remove('sliding-left', 'sliding-right');
+        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+        renderCarousel();
+        
+        // Reset transform back to -25% (centered position showing 2 months)
+        // Remove transition temporarily to avoid animation back to center
+        slider.style.transition = 'none';
+        slider.style.transform = 'translateX(-25%)';
+        
+        // Re-enable transition for next animation
+        setTimeout(() => {
+            slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            slider.removeAttribute('data-animating');
+        }, 50);
     }, 500);
+}
+
+/**
+ * Render 4-month carousel (prev-prev, left, right, next-next)
+ * Initial position shows months at index 1 and 2 (left and right panels)
+ * Carousel layout at -50%: [month-1] [month] [month+1] [month+2]
+ *                           ^^hidden  visible visible  hidden^^
+ */
+function renderCarousel() {
+    if (!currentRoomData) return;
+    
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    // Calculate 4 consecutive months starting from current month - 1
+    // This ensures:
+    // Index 0: month-1 (off-screen left at -50%)
+    // Index 1: month (visible left at -50%)
+    // Index 2: month+1 (visible right at -50%)
+    // Index 3: month+2 (off-screen right at -50%)
+    const months = [];
+    for (let i = -1; i <= 2; i++) {
+        const date = new Date(currentCalendarDate);
+        date.setMonth(date.getMonth() + i);
+        months.push({
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            name: `${monthNames[date.getMonth()]} ${date.getFullYear()}`
+        });
+    }
+    
+    // Render each month in carousel positions
+    const monthIds = ['prev-prev', 'left', 'right', 'next-next'];
+    const dayIds = ['calendar-days-prev-prev', 'calendar-days-left', 'calendar-days-right', 'calendar-days-next-next'];
+    
+    months.forEach((monthData, index) => {
+        const monthTitle = document.getElementById(`calendar-month-${monthIds[index]}`);
+        if (monthTitle) {
+            monthTitle.textContent = monthData.name;
+        }
+        renderMonthDays(dayIds[index], monthData.year, monthData.month);
+    });
 }
 
 /**
  * Render dual calendar (left month and right month)
  */
 function renderCalendar() {
-    if (!currentRoomData) return;
-    
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'];
-    
-    // Left calendar - current month
-    const leftYear = currentCalendarDate.getFullYear();
-    const leftMonth = currentCalendarDate.getMonth();
-    
-    document.getElementById('calendar-month-left').textContent = `${monthNames[leftMonth]} ${leftYear}`;
-    renderMonthDays('calendar-days-left', leftYear, leftMonth);
-    
-    // Right calendar - next month
-    const rightDate = new Date(currentCalendarDate);
-    rightDate.setMonth(rightDate.getMonth() + 1);
-    const rightYear = rightDate.getFullYear();
-    const rightMonth = rightDate.getMonth();
-    
-    document.getElementById('calendar-month-right').textContent = `${monthNames[rightMonth]} ${rightYear}`;
-    renderMonthDays('calendar-days-right', rightYear, rightMonth);
+    renderCarousel();
 }
 
 /**

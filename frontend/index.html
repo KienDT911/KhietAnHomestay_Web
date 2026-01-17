@@ -106,7 +106,17 @@
                 <button class="calendar-nav-btn nav-prev" onclick="changeMonth(-1)">&lt;</button>
                 <div class="dual-calendar-container">
                     <div class="calendar-slider" id="calendar-slider">
-                        <!-- Left Calendar -->
+                        <!-- Month -1 (off-screen left) -->
+                        <div class="calendar-month" id="calendar-prev-prev">
+                            <h3 class="calendar-month-title" id="calendar-month-prev-prev"></h3>
+                            <div class="calendar-grid">
+                                <div class="calendar-header">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div id="calendar-days-prev-prev" class="calendar-days"></div>
+                            </div>
+                        </div>
+                        <!-- Month 0 (Left visible) -->
                         <div class="calendar-month" id="calendar-left">
                             <h3 class="calendar-month-title" id="calendar-month-left"></h3>
                             <div class="calendar-grid">
@@ -116,7 +126,7 @@
                                 <div id="calendar-days-left" class="calendar-days"></div>
                             </div>
                         </div>
-                        <!-- Right Calendar -->
+                        <!-- Month 1 (Right visible) -->
                         <div class="calendar-month" id="calendar-right">
                             <h3 class="calendar-month-title" id="calendar-month-right"></h3>
                             <div class="calendar-grid">
@@ -124,6 +134,16 @@
                                     <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
                                 </div>
                                 <div id="calendar-days-right" class="calendar-days"></div>
+                            </div>
+                        </div>
+                        <!-- Month 2 (off-screen right) -->
+                        <div class="calendar-month" id="calendar-next-next">
+                            <h3 class="calendar-month-title" id="calendar-month-next-next"></h3>
+                            <div class="calendar-grid">
+                                <div class="calendar-header">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div id="calendar-days-next-next" class="calendar-days"></div>
                             </div>
                         </div>
                     </div>
