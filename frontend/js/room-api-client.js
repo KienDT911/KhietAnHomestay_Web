@@ -310,6 +310,9 @@ function changeMonth(delta) {
     
     slider.setAttribute('data-animating', 'true');
     
+    // Ensure transition is enabled
+    slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    
     // Apply smooth transform transition
     // Each month is 25% width, so we shift by 25% per month
     if (delta > 0) {
@@ -320,22 +323,31 @@ function changeMonth(delta) {
         slider.style.transform = 'translateX(0%)';
     }
     
-    // After animation completes, update months and reset to center position
-    setTimeout(() => {
+    // Listen for transition end instead of using setTimeout
+    const onTransitionEnd = () => {
+        slider.removeEventListener('transitionend', onTransitionEnd);
+        
+        // Update the calendar date
         currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+        
+        // Disable transition before resetting position
+        slider.style.transition = 'none';
+        
+        // Render new months
         renderCarousel();
         
         // Reset transform back to -25% (centered position showing 2 months)
-        // Remove transition temporarily to avoid animation back to center
-        slider.style.transition = 'none';
         slider.style.transform = 'translateX(-25%)';
         
+        // Force reflow to apply the transform immediately
+        slider.offsetHeight;
+        
         // Re-enable transition for next animation
-        setTimeout(() => {
-            slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-            slider.removeAttribute('data-animating');
-        }, 50);
-    }, 500);
+        slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+        slider.removeAttribute('data-animating');
+    };
+    
+    slider.addEventListener('transitionend', onTransitionEnd);
 }
 
 /**
