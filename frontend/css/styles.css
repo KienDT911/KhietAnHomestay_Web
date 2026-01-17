@@ -537,6 +537,29 @@ body {
     margin-bottom: 25px;
 }
 
+.contact-map-container {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.contact-map-container h3 {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    color: var(--dark-green);
+    margin-bottom: 20px;
+}
+
+.map-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.map-wrapper iframe {
+    display: block;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
