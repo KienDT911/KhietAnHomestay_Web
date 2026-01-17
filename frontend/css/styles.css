@@ -23,6 +23,7 @@
     --font-title: 'Birthstone', cursive;
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Poppins', sans-serif;
+    --font-vietnamese: 'Roboto', sans-serif;
     
     /* Spacing */
     --section-padding: 80px 20px;
@@ -146,6 +147,43 @@ body {
 
 .nav-link:hover::after {
     width: 100%;
+}
+
+/* ===== Language Switcher ===== */
+.language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 20px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--off-white);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.lang-btn:hover {
+    opacity: 1;
+}
+
+.lang-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+    color: white;
+}
+
+.lang-divider {
+    color: var(--off-white);
+    opacity: 0.5;
+    font-size: 12px;
 }
 
 /* ===== Hero Section ===== */
@@ -306,6 +344,131 @@ body {
 .about {
     padding: var(--section-padding);
     background: var(--cream);
+}
+
+/* ===== Homestay Image Banner ===== */
+.homestay-banner {
+    background: var(--off-white);
+    padding: 0;
+}
+
+.homestay-figure {
+    margin: 0;
+    position: relative;
+}
+
+.homestay-image {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay Contact Card */
+.banner-overlay-card {
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    transform: translateY(-50%);
+    background: rgba(61, 90, 64, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 380px;
+    z-index: 10;
+}
+
+.overlay-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.overlay-logo-image {
+    width: 60px;
+    height: 60px;
+    filter: brightness(0) invert(1);
+}
+
+.overlay-brand {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.overlay-brand-text {
+    font-family: var(--font-title);
+    font-size: 32px;
+    color: white;
+    font-weight: 400;
+}
+
+.overlay-brand-sub {
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--tan);
+    margin-top: 2px;
+}
+
+.overlay-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.overlay-contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.overlay-label {
+    font-size: 12px;
+    color: var(--tan);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.overlay-value {
+    font-size: 15px;
+    color: white;
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .homestay-image {
+        height: 40vh;
+    }
+    
+    .banner-overlay-card {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 25px;
+        max-width: calc(100% - 40px);
+    }
+    
+    .overlay-logo-image {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .overlay-brand-text {
+        font-size: 26px;
+    }
+    
+    .overlay-label {
+        font-size: 11px;
+    }
+    
+    .overlay-value {
+        font-size: 13px;
+    }
 }
 
 .about-intro {
@@ -1330,3 +1493,51 @@ body {
 }
 
 /* Remove duplicate media query */
+
+/* ===== Vietnamese Language Font Support ===== */
+html[lang="vi"] body,
+html[lang="vi"] p,
+html[lang="vi"] span:not(.logo-text):not(.birthstone-text):not(.overlay-brand-text),
+html[lang="vi"] a,
+html[lang="vi"] li,
+html[lang="vi"] td,
+html[lang="vi"] th,
+html[lang="vi"] label,
+html[lang="vi"] input,
+html[lang="vi"] textarea,
+html[lang="vi"] button,
+html[lang="vi"] .btn-primary,
+html[lang="vi"] .btn-secondary,
+html[lang="vi"] .nav-link,
+html[lang="vi"] .section-subtitle,
+html[lang="vi"] .hero-subtitle,
+html[lang="vi"] .about-text,
+html[lang="vi"] .feature-description,
+html[lang="vi"] .room-description,
+html[lang="vi"] .amenity-item,
+html[lang="vi"] .contact-info,
+html[lang="vi"] .footer-text {
+    font-family: var(--font-vietnamese);
+}
+
+html[lang="vi"] h1:not(.hero-title),
+html[lang="vi"] h2,
+html[lang="vi"] h3,
+html[lang="vi"] h4,
+html[lang="vi"] h5,
+html[lang="vi"] h6,
+html[lang="vi"] .section-title,
+html[lang="vi"] .room-title,
+html[lang="vi"] .feature-title {
+    font-family: var(--font-vietnamese);
+    font-weight: 600;
+}
+
+/* Preserve decorative Birthstone font for branding elements */
+html[lang="vi"] .logo-text,
+html[lang="vi"] .hero-title,
+html[lang="vi"] .birthstone-text,
+html[lang="vi"] .footer-logo .logo-text,
+html[lang="vi"] .overlay-brand-text {
+    font-family: var(--font-title) !important;
+}

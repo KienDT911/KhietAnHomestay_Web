@@ -179,6 +179,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Rooms loaded successfully');
 });
 
+// Re-render rooms when language changes
+window.addEventListener('languageChanged', function() {
+    displayRoomsFromAPI();
+});
+
 /**
  * Display rooms in the rooms section
  */
@@ -187,9 +192,16 @@ function displayRoomsFromAPI() {
     if (!roomsGrid) return;
 
     const rooms = homepageRoomManager.getAllRooms();
+    const lang = window.i18n ? window.i18n.getCurrentLang() : 'en';
+    
+    // Get translations
+    const viewCalendarText = window.i18n ? window.i18n.t('view_calendar') : '📅 View Calendar';
+    const guestsText = window.i18n ? window.i18n.t('guests') : 'guests';
+    const nightText = window.i18n ? window.i18n.t('night') : 'night';
     
     if (rooms.length === 0) {
-        roomsGrid.innerHTML = '<div class="loading-rooms"><p>No rooms available at the moment.</p></div>';
+        const loadingText = window.i18n ? window.i18n.t('loading_rooms') : 'No rooms available at the moment.';
+        roomsGrid.innerHTML = `<div class="loading-rooms"><p>${loadingText}</p></div>`;
         return;
     }
 
@@ -200,25 +212,29 @@ function displayRoomsFromAPI() {
             ? room.amenities.map(a => `<span class="amenity">• ${a}</span>`).join('')
             : '';
 
+        // Use Vietnamese description if available and current lang is Vietnamese
+        const description = (lang === 'vi' && room.description_vi) ? room.description_vi : room.description;
+        const name = (lang === 'vi' && room.name_vi) ? room.name_vi : room.name;
+
         const roomCard = document.createElement('div');
         roomCard.className = 'room-card';
         roomCard.dataset.roomId = room.room_id;
         roomCard.innerHTML = `
             <div class="room-image-placeholder" onclick="openCalendarModal('${room.room_id}')" style="cursor: pointer;">
-                <span class="placeholder-text">${room.name}</span>
+                <span class="placeholder-text">${name}</span>
             </div>
             <div class="room-content">
-                <h3 class="room-title">${room.name}</h3>
-                <p class="room-description">${room.description}</p>
+                <h3 class="room-title">${name}</h3>
+                <p class="room-description">${description}</p>
                 <div class="room-amenities">
                     ${amenitiesHtml}
                 </div>
                 <div class="room-footer">
-                    <span class="room-price">${formatPrice(room.price)}/night</span>
-                    <span class="room-capacity">👤 ${room.persons || room.capacity} guests</span>
+                    <span class="room-price">${formatPrice(room.price)}/${nightText}</span>
+                    <span class="room-capacity">👤 ${room.persons || room.capacity} ${guestsText}</span>
                 </div>
                 <button class="btn-secondary view-calendar-btn" onclick="openCalendarModal('${room.room_id}')">
-                    📅 View Calendar
+                    ${viewCalendarText}
                 </button>
             </div>
         `;

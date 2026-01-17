@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -38,43 +38,72 @@
             <img src="assets/images/logo.png" alt="Khiết An Homestay logo" class="hero-logo">
             <h1 class="hero-title">Khiết An</h1>
             <div class="hero-homestay">HOMESTAY</div>
-            <p class="hero-subtitle">Your Peaceful Retreat. Your Home Away From Home.</p>
-            <a href="#rooms" class="btn-primary">Explore Our Rooms</a>
+            <p class="hero-subtitle" data-i18n="hero_subtitle">Your Peaceful Retreat. Your Home Away From Home.</p>
+            <a href="#rooms" class="btn-primary" data-i18n="hero_cta">Explore Our Rooms</a>
         </div>
+    </section>
+
+    <!-- Homestay Image Banner -->
+    <section id="homestay-banner" class="homestay-banner">
+        <figure class="homestay-figure">
+            <!-- Replace the src below with your real homestay image file (e.g., assets/images/homestay.jpg) -->
+            <img src="assets/images/homestay.jpg" alt="Khiết An Homestay" class="homestay-image">
+            
+            <!-- Overlay Contact Card -->
+            <div class="banner-overlay-card">
+                <div class="overlay-logo">
+                    <img src="assets/images/logo.png" alt="Logo" class="overlay-logo-image">
+                    <div class="overlay-brand">
+                        <span class="overlay-brand-text">Khiết An</span>
+                        <span class="overlay-brand-sub">HOMESTAY</span>
+                    </div>
+                </div>
+                <div class="overlay-contacts">
+                    <div class="overlay-contact-item">
+                        <span class="overlay-label">WhatsApp:</span>
+                        <span class="overlay-value">(+84) 911344927 - Mr.Kien</span>
+                    </div>
+                    <div class="overlay-contact-item">
+                        <span class="overlay-label">Tel:</span>
+                        <span class="overlay-value">(+84) 989073326 - Mrs.Tam</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
     </section>
 
     <!-- About Section -->
     <section id="about" class="about">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Welcome to Khiết An</h2>
+                <h2 class="section-title" data-i18n="about_title">Welcome to Khiết An</h2>
                 <div class="title-underline"></div>
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <p class="about-intro">
+                    <p class="about-intro" data-i18n="about_intro">
                         Nestled in a serene neighborhood, <span class="birthstone-text">Khiết An</span> Homestay offers more than just accommodation—we provide a warm embrace of genuine hospitality and comfort.
                     </p>
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon"><img src="assets/icons/cozy.svg" alt="Cozy Atmosphere"></div>
-                            <h3>Cozy Atmosphere</h3>
-                            <p>Every corner designed for your comfort and relaxation</p>
+                            <h3 data-i18n="feature_cozy_title">Cozy Atmosphere</h3>
+                            <p data-i18n="feature_cozy_desc">Every corner designed for your comfort and relaxation</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon"><img src="assets/icons/nature.svg" alt="Natural Setting"></div>
-                            <h3>Natural Setting</h3>
-                            <p>Surrounded by peaceful greenery and fresh air</p>
+                            <h3 data-i18n="feature_nature_title">Natural Setting</h3>
+                            <p data-i18n="feature_nature_desc">Surrounded by peaceful greenery and fresh air</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon"><img src="assets/icons/heart.svg" alt="Warm Hospitality"></div>
-                            <h3>Warm Hospitality</h3>
-                            <p>Treated like family from the moment you arrive</p>
+                            <h3 data-i18n="feature_hospitality_title">Warm Hospitality</h3>
+                            <p data-i18n="feature_hospitality_desc">Treated like family from the moment you arrive</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon"><img src="assets/icons/coffee.svg" alt="Homely Comforts"></div>
-                            <h3>Homely Comforts</h3>
-                            <p>All amenities you need for a comfortable stay</p>
+                            <h3 data-i18n="feature_comfort_title">Homely Comforts</h3>
+                            <p data-i18n="feature_comfort_desc">All amenities you need for a comfortable stay</p>
                         </div>
                     </div>
                 </div>
@@ -86,14 +115,14 @@
     <section id="rooms" class="rooms">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Rooms</h2>
+                <h2 class="section-title" data-i18n="rooms_title">Our Rooms</h2>
                 <div class="title-underline"></div>
-                <p class="section-subtitle">Choose your perfect sanctuary</p>
+                <p class="section-subtitle" data-i18n="rooms_subtitle">Choose your perfect sanctuary</p>
             </div>
             <div class="rooms-grid" id="rooms-grid">
                 <!-- Rooms will be loaded dynamically from MongoDB -->
                 <div class="loading-rooms">
-                    <p>Loading rooms...</p>
+                    <p data-i18n="loading_rooms">Loading rooms...</p>
                 </div>
             </div>
         </div>
@@ -156,8 +185,8 @@
                 <button class="calendar-nav-btn nav-next" onclick="changeMonth(1)">&gt;</button>
             </div>
             <div class="calendar-legend">
-                <span class="legend-item"><span class="legend-dot available"></span> Available</span>
-                <span class="legend-item"><span class="legend-dot today"></span> Today</span>
+                <span class="legend-item"><span class="legend-dot available"></span> <span data-i18n="available">Available</span></span>
+                <span class="legend-item"><span class="legend-dot today"></span> <span data-i18n="today">Today</span></span>
             </div>
         </div>
     </div>
@@ -165,37 +194,37 @@
     <section id="contact" class="contact">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
+                <h2 class="section-title" data-i18n="contact_title">Get In Touch</h2>
                 <div class="title-underline"></div>
-                <p class="section-subtitle">We'd love to host you!</p>
+                <p class="section-subtitle" data-i18n="contact_subtitle">We'd love to host you!</p>
             </div>
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-card">
                         <div class="contact-icon"><img src="assets/icons/location.svg" alt="Address"></div>
                         <h3 data-i18n="address">Address</h3>
-                        <p>3/63 Le Huan Street<br>Thuan Hoa Ward, Hue City<br>Thua Thien Hue, Vietnam</p>
+                        <p data-i18n="address_text">3/63 Le Huan Street<br>Thuan Hoa Ward, Hue City<br>Thua Thien Hue, Vietnam</p>
                     </div>
                     <div class="contact-card">
                         <div class="contact-icon"><img src="assets/icons/phone.svg" alt="Phone"></div>
-                        <h3>Phone</h3>
+                        <h3 data-i18n="phone">Phone</h3>
                         <p>+84 123 456 789</p>
-                        <p class="contact-note">Available 24/7</p>
+                        <p class="contact-note" data-i18n="phone_note">Available 24/7</p>
                     </div>
                     <div class="contact-card">
                         <div class="contact-icon"><img src="assets/icons/email.svg" alt="Email"></div>
                         <h3>Email</h3>
                         <p>dtkienservice@gmail.com</p>
-                        <p class="contact-note">We reply within 24 hours</p>
+                        <p class="contact-note" data-i18n="email_note">We reply within 24 hours</p>
                     </div>
                     <div class="contact-card">
                         <div class="contact-icon"><img src="assets/icons/clock.svg" alt="Check-in/Check-out"></div>
-                        <h3>Check-in/Check-out</h3>
-                        <p>Check-in: 2:00 PM<br>Check-out: 12:00 PM</p>
+                        <h3 data-i18n="checkin_checkout">Check-in/Check-out</h3>
+                        <p data-i18n="checkin_times">Check-in: 2:00 PM<br>Check-out: 12:00 PM</p>
                     </div>
                 </div>
                 <div class="contact-map-container">
-                    <h3>Find Us</h3>
+                    <h3 data-i18n="find_us">Find Us</h3>
                     <div class="map-wrapper">
                         <iframe 
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3826.2!2d107.5943!3d16.4637!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3141a13aaaaaaaaa%3A0xbbbbbbbbbbbbbbbb!2s3%2F63%20L%C3%AA%20Hu%C3%A2n%2C%20Thu%E1%BA%ADn%20Ho%C3%A0%2C%20Hu%E1%BA%BF%2C%20Th%C3%A0nh%20ph%E1%BB%91%20Hu%E1%BA%BF%2C%20Vietnam!5e0!3m2!1sen!2s!4v1700000000000"
@@ -219,10 +248,10 @@
                 <div class="footer-logo">
                     <span class="logo-text">Khiết An</span>
                     <span class="logo-sub">HOMESTAY</span>
-                    <p class="footer-tagline">Come as a guest. Leave as family.</p>
+                    <p class="footer-tagline" data-i18n="footer_tagline">Come as a guest. Leave as family.</p>
                 </div>
                 <div class="footer-social">
-                    <h4>Follow Us</h4>
+                    <h4 data-i18n="follow_us">Follow Us</h4>
                     <div class="social-icons">
                         <a href="#" class="social-link">Facebook</a>
                         <a href="#" class="social-link">Instagram</a>
@@ -231,11 +260,12 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Khiết An Homestay. All rights reserved.</p>
+                <p data-i18n="copyright">&copy; 2025 Khiết An Homestay. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <script src="js/i18n.js"></script>
     <script src="js/room-api-client.js"></script>
     <script src="js/script.js"></script>
 </body>
