@@ -71,7 +71,7 @@ const translations = {
         hero_cta: "Khám phá phòng",
         
         // About
-        about_title: "Chào mừng đến Khiết An",
+        about_title: "Xin kính chào quý khách",
         about_intro: 'Nằm trong một khu phố yên tĩnh, <span class="birthstone-text">Khiết An</span> Homestay không chỉ là nơi lưu trú, chúng tôi mang đến sự ấm áp của lòng hiếu khách, sự an lành và thuận tiện.',
         
         // Features
@@ -86,7 +86,7 @@ const translations = {
         
         // Rooms
         rooms_title: "Các phòng",
-        rooms_subtitle: "Chọn không gian hoàn hảo của bạn",
+        rooms_subtitle: "Chọn không gian hoàn hảo cho bạn và gia đình",
         loading_rooms: "Đang tải phòng...",
         view_calendar: "Xem lịch",
         guests: "khách",
