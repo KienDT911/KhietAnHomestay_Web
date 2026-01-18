@@ -17,7 +17,7 @@ const translations = {
         
         // About
         about_title: "Welcome to Khiết An",
-        about_intro: 'Nestled in a serene neighborhood, <span class="birthstone-text">Khiết An</span> Homestay offers more than just accommodation—we provide a warm embrace of genuine hospitality and comfort.',
+        about_intro: 'Nestled in a serene neighborhood, <span class="birthstone-text">Khiết An</span> Homestay offers more than just accommodation, we provide a warm embrace of genuine hospitality and comfort.',
         
         // Features
         feature_cozy_title: "Cozy Atmosphere",
@@ -28,6 +28,8 @@ const translations = {
         feature_hospitality_desc: "Treated like family from the moment you arrive",
         feature_comfort_title: "Homely Comforts",
         feature_comfort_desc: "All amenities you need for a comfortable stay",
+        feature_position_title: "Special Position",
+        feature_position_desc: "Inner Imperial area and convenient for traveling to tourist attractions",
         
         // Rooms
         rooms_title: "Our Rooms",
@@ -83,6 +85,8 @@ const translations = {
         feature_hospitality_desc: "Được đối xử như người thân từ khi bạn đến",
         feature_comfort_title: "Tiện nghi đầy đủ",
         feature_comfort_desc: "Tất cả tiện nghi bạn cần cho một kỳ nghỉ thoải mái",
+        feature_position_title: "Vị trí đặc biệt",
+        feature_position_desc: "Khu vực nội thành, thuận tiện cho việc đi du lịch các điểm tham quan",
         
         // Rooms
         rooms_title: "Các phòng",
