@@ -220,7 +220,7 @@ function displayRoomsFromAPI() {
         roomCard.className = 'room-card';
         roomCard.dataset.roomId = room.room_id;
         roomCard.innerHTML = `
-            <div class="room-image-placeholder" onclick="openCalendarModal('${room.room_id}')" style="cursor: pointer;">
+            <div class="room-image-placeholder" onclick="openRoomGallery('${room.room_id}')" style="cursor: pointer;">
                 <span class="placeholder-text">${name}</span>
             </div>
             <div class="room-content">
@@ -282,6 +282,72 @@ function applyCardAnimations() {
 /**
  * Open calendar modal for a specific room
  */
+/**
+ * Open room gallery modal to display all images
+ */
+function openRoomGallery(roomId) {
+    const room = homepageRoomManager.getAllRooms().find(r => r.room_id === roomId);
+    if (!room) {
+        console.error('Room not found:', roomId);
+        return;
+    }
+    
+    // Create gallery modal HTML
+    const modalHTML = `
+        <div class="gallery-modal" onclick="closeRoomGallery(event)">
+            <div class="gallery-container" onclick="event.stopPropagation()">
+                <button class="gallery-close" onclick="closeRoomGallery()">&times;</button>
+                <h2 class="gallery-title">${room.name}</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-image-main">
+                        <img id="gallery-main-image" src="${room.image || 'assets/images/placeholder.jpg'}" alt="${room.name}">
+                    </div>
+                    <div class="gallery-thumbnails">
+                        <div class="thumbnail-item active" onclick="changeGalleryImage(this, '${room.image || 'assets/images/placeholder.jpg'}')">
+                            <img src="${room.image || 'assets/images/placeholder.jpg'}" alt="${room.name}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Check if modal already exists, if so remove it
+    const existingModal = document.querySelector('.gallery-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create and append modal
+    const modal = document.createElement('div');
+    modal.innerHTML = modalHTML;
+    document.body.appendChild(modal.firstElementChild);
+}
+
+/**
+ * Close room gallery modal
+ */
+function closeRoomGallery(event) {
+    // Close on background click or close button
+    if (!event || event.target.classList.contains('gallery-modal')) {
+        const modal = document.querySelector('.gallery-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+}
+
+/**
+ * Change gallery main image
+ */
+function changeGalleryImage(element, imageSrc) {
+    document.getElementById('gallery-main-image').src = imageSrc;
+    document.querySelectorAll('.thumbnail-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    element.classList.add('active');
+}
+
 function openCalendarModal(roomId) {
     const room = homepageRoomManager.getAllRooms().find(r => r.room_id === roomId);
     if (!room) {
