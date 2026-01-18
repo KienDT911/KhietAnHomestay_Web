@@ -326,17 +326,31 @@ function changeMonth(delta) {
     
     slider.setAttribute('data-animating', 'true');
     
+    // Check if mobile view (vertical slider)
+    const isMobile = window.innerWidth <= 480;
+    
     // Ensure transition is enabled
     slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
     
-    // Apply smooth transform transition
-    // Each month is 25% width, so we shift by 25% per month
-    if (delta > 0) {
-        // NEXT: slide left from -25% to -50%
-        slider.style.transform = 'translateX(-50%)';
+    if (isMobile) {
+        // Vertical sliding for mobile using fixed pixel values
+        // Each month is 190px, starting at -190px (showing months 1 and 2)
+        if (delta > 0) {
+            // NEXT: slide up from -190px to -380px
+            slider.style.transform = 'translateY(-380px)';
+        } else {
+            // PREV: slide down from -190px to 0px
+            slider.style.transform = 'translateY(0px)';
+        }
     } else {
-        // PREV: slide right from -25% to 0%
-        slider.style.transform = 'translateX(0%)';
+        // Horizontal sliding for desktop
+        if (delta > 0) {
+            // NEXT: slide left from -25% to -50%
+            slider.style.transform = 'translateX(-50%)';
+        } else {
+            // PREV: slide right from -25% to 0%
+            slider.style.transform = 'translateX(0%)';
+        }
     }
     
     // Listen for transition end instead of using setTimeout
@@ -352,9 +366,12 @@ function changeMonth(delta) {
         // Render new months
         renderCarousel();
         
-        // Reset transform back to -25% (centered position showing 2 months)
-        slider.style.transform = 'translateX(-25%)';
-        
+        // Reset transform back to centered position
+        if (isMobile) {
+            slider.style.transform = 'translateY(-190px)';
+        } else {
+            slider.style.transform = 'translateX(-25%)';
+        }        
         // Force reflow to apply the transform immediately
         slider.offsetHeight;
         
