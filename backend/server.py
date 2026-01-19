@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 import os
 import json
 from datetime import datetime
+import cloudinary
+import cloudinary.api
 
 # Custom JSON encoder to handle datetime and ObjectId
 class MongoJSONEncoder(json.JSONEncoder):
@@ -20,6 +22,73 @@ class MongoJSONEncoder(json.JSONEncoder):
 
 # Load environment variables
 load_dotenv()
+
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+# Cache for Cloudinary images to avoid repeated API calls
+cloudinary_images_cache = {}
+
+def get_cloudinary_room_images(room_id):
+    """Fetch room images from Cloudinary folder structure.
+    
+    Expected folder structure in Cloudinary:
+    - khietan_homestay/rooms/{room_id}/cover/ -> Cover image for room card
+    - khietan_homestay/rooms/{room_id}/room/ -> Gallery images for room detail view
+    
+    Returns dict with 'cover' and 'gallery' image URLs
+    """
+    global cloudinary_images_cache
+    
+    # Check cache first
+    if room_id in cloudinary_images_cache:
+        return cloudinary_images_cache[room_id]
+    
+    result = {
+        'cover': None,
+        'gallery': []
+    }
+    
+    try:
+        # Get cover image from cover folder
+        cover_folder = f"khietan_homestay/rooms/{room_id}/cover"
+        try:
+            cover_response = cloudinary.api.resources(
+                type="upload",
+                prefix=cover_folder,
+                max_results=1
+            )
+            if cover_response.get('resources'):
+                result['cover'] = cover_response['resources'][0]['secure_url']
+        except Exception as e:
+            pass
+        
+        # Get gallery images from room folder
+        room_folder = f"khietan_homestay/rooms/{room_id}/room"
+        try:
+            gallery_response = cloudinary.api.resources(
+                type="upload",
+                prefix=room_folder,
+                max_results=50
+            )
+            if gallery_response.get('resources'):
+                for resource in gallery_response['resources']:
+                    result['gallery'].append(resource['secure_url'])
+        except Exception as e:
+            pass
+        
+        # Cache the result
+        cloudinary_images_cache[room_id] = result
+        
+    except Exception as e:
+        pass
+    
+    return result
 
 # Get the frontend directory path (relative to backend folder)
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
@@ -125,6 +194,21 @@ def convert_room_for_api(room):
     else:
         id_str = str(id_value)
     
+    # Get images from database first (preserves order), fallback to Cloudinary API
+    db_images = room.get('images', {})
+    cover_images = db_images.get('cover', [])
+    room_images = db_images.get('room', [])
+    
+    # Use database images if available, otherwise fetch from Cloudinary
+    if cover_images or room_images:
+        cover_image = cover_images[0] if cover_images else None
+        gallery_images = room_images  # Use exact order from database
+    else:
+        # Fallback to Cloudinary API (for rooms without stored images)
+        cloudinary_images = get_cloudinary_room_images(id_str)
+        cover_image = cloudinary_images['cover']
+        gallery_images = cloudinary_images['gallery']
+    
     # Map MongoDB field names to API field names
     api_room = {
         'room_id': id_str,
@@ -137,7 +221,9 @@ def convert_room_for_api(room):
         'amenities': room.get('amenities', []),
         'bookedIntervals': room.get('bookedIntervals', []),
         'created_at': str(room.get('created_at', '')) if room.get('created_at') else None,
-        'updated_at': str(room.get('updated_at', '')) if room.get('updated_at') else None
+        'updated_at': str(room.get('updated_at', '')) if room.get('updated_at') else None,
+        'coverImage': cover_image,
+        'galleryImages': gallery_images
     }
     return api_room
 
@@ -168,9 +254,32 @@ def api_info():
         'endpoints': {
             'health': '/backend/health',
             'rooms': '/backend/api/rooms',
-            'admin_rooms': '/backend/api/admin/rooms'
+            'admin_rooms': '/backend/api/admin/rooms',
+            'clear_image_cache': '/backend/api/admin/clear-image-cache'
         }
     }), 200
+
+@app.route('/backend/api/admin/clear-image-cache', methods=['POST'])
+def clear_image_cache():
+    """Clear the Cloudinary images cache to fetch fresh images"""
+    global cloudinary_images_cache
+    room_id = request.args.get('room_id')
+    
+    if room_id:
+        # Clear cache for specific room
+        if room_id in cloudinary_images_cache:
+            del cloudinary_images_cache[room_id]
+        return jsonify({
+            'success': True,
+            'message': f'Image cache cleared for room {room_id}'
+        }), 200
+    else:
+        # Clear entire cache
+        cloudinary_images_cache = {}
+        return jsonify({
+            'success': True,
+            'message': 'All image cache cleared'
+        }), 200
 
 # ===== Serve Frontend Static Files =====
 

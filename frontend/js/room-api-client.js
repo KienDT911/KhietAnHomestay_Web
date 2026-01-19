@@ -216,12 +216,19 @@ function displayRoomsFromAPI() {
         const description = (lang === 'vi' && room.description_vi) ? room.description_vi : room.description;
         const name = (lang === 'vi' && room.name_vi) ? room.name_vi : room.name;
 
+        // Get cover image URL from Cloudinary
+        const coverImageUrl = room.coverImage;
+        const hasImage = !!coverImageUrl;
+        
         const roomCard = document.createElement('div');
         roomCard.className = 'room-card';
         roomCard.dataset.roomId = room.room_id;
         roomCard.innerHTML = `
-            <div class="room-image-placeholder" onclick="openRoomGallery('${room.room_id}')" style="cursor: pointer;">
-                <span class="placeholder-text">${name}</span>
+            <div class="room-image${hasImage ? '' : ' no-image'}" onclick="openRoomGallery('${room.room_id}')" style="cursor: pointer;">
+                ${hasImage 
+                    ? `<img src="${coverImageUrl}" alt="${name}" class="room-cover-image" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
+                    : `<span class="placeholder-text">${name}</span>`
+                }
             </div>
             <div class="room-content">
                 <h3 class="room-title">${name}</h3>
@@ -292,6 +299,39 @@ function openRoomGallery(roomId) {
         return;
     }
     
+    // Get all images - combine cover and gallery images
+    const coverImage = room.coverImage || null;
+    const galleryImages = room.galleryImages || [];
+    
+    // Use first gallery image as main, or cover if no gallery
+    const mainImage = galleryImages.length > 0 ? galleryImages[0] : coverImage;
+    
+    // If no images at all, show a message
+    if (!mainImage && galleryImages.length === 0) {
+        alert('No images available for this room.');
+        return;
+    }
+    
+    // Build thumbnails HTML
+    let thumbnailsHTML = '';
+    
+    // Add cover image as first thumbnail if exists
+    if (coverImage) {
+        thumbnailsHTML += `
+            <div class="thumbnail-item${mainImage === coverImage ? ' active' : ''}" onclick="changeGalleryImage(this, '${coverImage}')">
+                <img src="${coverImage}" alt="${room.name} - Cover" onerror="this.parentElement.style.display='none'">
+            </div>`;
+    }
+    
+    // Add gallery images as thumbnails
+    galleryImages.forEach((imgUrl, index) => {
+        const isActive = (index === 0 && !coverImage) || (mainImage === imgUrl) ? ' active' : '';
+        thumbnailsHTML += `
+            <div class="thumbnail-item${isActive}" onclick="changeGalleryImage(this, '${imgUrl}')">
+                <img src="${imgUrl}" alt="${room.name} - ${index + 1}" onerror="this.parentElement.style.display='none'">
+            </div>`;
+    });
+    
     // Create gallery modal HTML
     const modalHTML = `
         <div class="gallery-modal" onclick="closeRoomGallery(event)">
@@ -300,12 +340,10 @@ function openRoomGallery(roomId) {
                 <h2 class="gallery-title">${room.name}</h2>
                 <div class="gallery-grid">
                     <div class="gallery-image-main">
-                        <img id="gallery-main-image" src="${room.image || 'assets/images/placeholder.jpg'}" alt="${room.name}">
+                        <img id="gallery-main-image" src="${mainImage}" alt="${room.name}" onerror="this.style.display='none'">
                     </div>
                     <div class="gallery-thumbnails">
-                        <div class="thumbnail-item active" onclick="changeGalleryImage(this, '${room.image || 'assets/images/placeholder.jpg'}')">
-                            <img src="${room.image || 'assets/images/placeholder.jpg'}" alt="${room.name}">
-                        </div>
+                        ${thumbnailsHTML}
                     </div>
                 </div>
             </div>
