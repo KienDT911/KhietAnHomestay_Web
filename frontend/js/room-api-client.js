@@ -237,7 +237,7 @@ function displayRoomsFromAPI() {
                     ${amenitiesHtml}
                 </div>
                 <div class="room-footer">
-                    <span class="room-price">${formatPrice(room.price)}/${nightText}</span>
+                    <span class="room-price">${formatPrice(room.price)}</span>
                     <span class="room-capacity">👤 ${room.persons || room.capacity} ${guestsText}</span>
                 </div>
                 <button class="btn-secondary view-calendar-btn" onclick="openCalendarModal('${room.room_id}')">
@@ -253,13 +253,13 @@ function displayRoomsFromAPI() {
 }
 
 /**
- * Format price for display
+ * Format price for display in Vietnamese VND format
+ * e.g., 700 -> "700.000 VND"
  */
 function formatPrice(price) {
-    if (price >= 1000) {
-        return `${price.toLocaleString()}k VND`;
-    }
-    return `$${price}`;
+    // Format as VND with thousands separator as period
+    const vndPrice = Math.round(price * 1000);
+    return `${vndPrice.toLocaleString('de-DE')} VND`;
 }
 
 /**

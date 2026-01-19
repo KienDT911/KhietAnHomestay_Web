@@ -715,7 +715,7 @@ body {
 }
 
 .room-image {
-    height: 220px;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     position: relative;
 }
@@ -754,7 +754,7 @@ body {
 }
 
 .room-image-placeholder {
-    height: 220px;
+    aspect-ratio: 1 / 1;
     background: linear-gradient(135deg, var(--light-sage) 0%, var(--sage-green) 100%);
     display: flex;
     align-items: center;
@@ -827,7 +827,7 @@ body {
 
 .room-price {
     font-family: var(--font-heading);
-    font-size: 26px;
+    font-size: 18px;
     color: var(--warm-brown);
     font-weight: 600;
 }
@@ -1195,7 +1195,7 @@ body {
     }
     
     .room-price {
-        font-size: 22px;
+        font-size: 16px;
     }
     
     .contact-form-container {
