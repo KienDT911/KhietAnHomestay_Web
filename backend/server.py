@@ -39,9 +39,11 @@ def get_cloudinary_room_images(room_id):
     
     Expected folder structure in Cloudinary:
     - khietan_homestay/rooms/{room_id}/cover/ -> Cover image for room card
-    - khietan_homestay/rooms/{room_id}/room/ -> Gallery images for room detail view
+    - khietan_homestay/rooms/{room_id}/bedroom/ -> Bedroom photos
+    - khietan_homestay/rooms/{room_id}/bathroom/ -> Bathroom photos
+    - khietan_homestay/rooms/{room_id}/exterior/ -> Exterior/outdoor photos
     
-    Returns dict with 'cover' and 'gallery' image URLs
+    Returns dict with 'cover' and categorized gallery image URLs
     """
     global cloudinary_images_cache
     
@@ -51,36 +53,35 @@ def get_cloudinary_room_images(room_id):
     
     result = {
         'cover': None,
-        'gallery': []
+        'bedroom': [],
+        'bathroom': [],
+        'exterior': [],
+        'gallery': []  # All images combined
     }
     
+    # Define image categories to fetch
+    categories = ['cover', 'bedroom', 'bathroom', 'exterior']
+    
     try:
-        # Get cover image from cover folder
-        cover_folder = f"khietan_homestay/rooms/{room_id}/cover"
-        try:
-            cover_response = cloudinary.api.resources(
-                type="upload",
-                prefix=cover_folder,
-                max_results=1
-            )
-            if cover_response.get('resources'):
-                result['cover'] = cover_response['resources'][0]['secure_url']
-        except Exception as e:
-            pass
-        
-        # Get gallery images from room folder
-        room_folder = f"khietan_homestay/rooms/{room_id}/room"
-        try:
-            gallery_response = cloudinary.api.resources(
-                type="upload",
-                prefix=room_folder,
-                max_results=50
-            )
-            if gallery_response.get('resources'):
-                for resource in gallery_response['resources']:
-                    result['gallery'].append(resource['secure_url'])
-        except Exception as e:
-            pass
+        for category in categories:
+            folder = f"khietan_homestay/rooms/{room_id}/{category}"
+            try:
+                response = cloudinary.api.resources(
+                    type="upload",
+                    prefix=folder,
+                    max_results=50
+                )
+                if response.get('resources'):
+                    urls = [resource['secure_url'] for resource in response['resources']]
+                    
+                    if category == 'cover':
+                        result['cover'] = urls[0] if urls else None
+                    else:
+                        result[category] = urls
+                        # Also add to combined gallery
+                        result['gallery'].extend(urls)
+            except Exception as e:
+                pass
         
         # Cache the result
         cloudinary_images_cache[room_id] = result
@@ -198,16 +199,33 @@ def convert_room_for_api(room):
     db_images = room.get('images', {})
     cover_images = db_images.get('cover', [])
     room_images = db_images.get('room', [])
+    bedroom_images = db_images.get('bedroom', [])
+    bathroom_images = db_images.get('bathroom', [])
+    exterior_images = db_images.get('exterior', [])
     
     # Use database images if available, otherwise fetch from Cloudinary
-    if cover_images or room_images:
+    if cover_images or room_images or bedroom_images or bathroom_images or exterior_images:
         cover_image = cover_images[0] if cover_images else None
         gallery_images = room_images  # Use exact order from database
+        # Categorized images from database
+        categorized_images = {
+            'bedroom': bedroom_images,
+            'bathroom': bathroom_images,
+            'exterior': exterior_images
+        }
+        # If no categorized images but have room images, treat room as bedroom
+        if not any([bedroom_images, bathroom_images, exterior_images]) and room_images:
+            categorized_images['bedroom'] = room_images
     else:
         # Fallback to Cloudinary API (for rooms without stored images)
         cloudinary_images = get_cloudinary_room_images(id_str)
         cover_image = cloudinary_images['cover']
         gallery_images = cloudinary_images['gallery']
+        categorized_images = {
+            'bedroom': cloudinary_images.get('bedroom', []),
+            'bathroom': cloudinary_images.get('bathroom', []),
+            'exterior': cloudinary_images.get('exterior', [])
+        }
     
     # Map MongoDB field names to API field names
     api_room = {
@@ -223,7 +241,8 @@ def convert_room_for_api(room):
         'created_at': str(room.get('created_at', '')) if room.get('created_at') else None,
         'updated_at': str(room.get('updated_at', '')) if room.get('updated_at') else None,
         'coverImage': cover_image,
-        'galleryImages': gallery_images
+        'galleryImages': gallery_images,
+        'categorizedImages': categorized_images
     }
     return api_room
 

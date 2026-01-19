@@ -291,6 +291,7 @@ function applyCardAnimations() {
  */
 /**
  * Open room gallery modal to display all images
+ * Layout: Main image on left, scrollable thumbnails on right with section labels
  */
 function openRoomGallery(roomId) {
     const room = homepageRoomManager.getAllRooms().find(r => r.room_id === roomId);
@@ -299,48 +300,81 @@ function openRoomGallery(roomId) {
         return;
     }
     
-    // Get all images - combine cover and gallery images
+    // Get all images - combine cover and categorized/gallery images
     const coverImage = room.coverImage || null;
+    const categorizedImages = room.categorizedImages || {};
     const galleryImages = room.galleryImages || [];
     
-    // Use first gallery image as main, or cover if no gallery
-    const mainImage = galleryImages.length > 0 ? galleryImages[0] : coverImage;
+    // Get images by category
+    const bedroomImages = categorizedImages.bedroom || [];
+    const bathroomImages = categorizedImages.bathroom || [];
+    const exteriorImages = categorizedImages.exterior || [];
+    
+    // Get translations for section headers
+    const lang = window.i18n ? window.i18n.getCurrentLang() : 'en';
+    const sectionLabels = {
+        cover: lang === 'vi' ? 'Ảnh bìa' : 'Cover',
+        bedroom: lang === 'vi' ? 'Phòng ngủ' : 'Bedroom',
+        bathroom: lang === 'vi' ? 'Phòng tắm' : 'Bathroom',
+        exterior: lang === 'vi' ? 'Ngoại cảnh' : 'Exterior',
+        room: lang === 'vi' ? 'Hình ảnh' : 'Images'
+    };
     
     // If no images at all, show a message
-    if (!mainImage && galleryImages.length === 0) {
+    const hasImages = coverImage || bedroomImages.length > 0 || bathroomImages.length > 0 || exteriorImages.length > 0 || galleryImages.length > 0;
+    if (!hasImages) {
         alert('No images available for this room.');
         return;
     }
     
-    // Build thumbnails HTML
-    let thumbnailsHTML = '';
+    // Use first available image as main image
+    const mainImage = coverImage || bedroomImages[0] || bathroomImages[0] || exteriorImages[0] || galleryImages[0];
     
-    // Add cover image as first thumbnail if exists
+    // Build thumbnails HTML with section labels
+    let thumbnailsHTML = '';
+    let imageIndex = 0;
+    
+    // Helper function to create thumbnail items for a category
+    const createThumbnailSection = (images, categoryKey) => {
+        if (!images || images.length === 0) return '';
+        
+        let sectionHTML = `<div class="thumbnail-section-label">${sectionLabels[categoryKey]}</div>`;
+        images.forEach((imgUrl) => {
+            const isActive = imgUrl === mainImage ? ' active' : '';
+            sectionHTML += `
+                <div class="thumbnail-item${isActive}" onclick="changeGalleryImage(this, '${imgUrl}')" data-index="${imageIndex}">
+                    <img src="${imgUrl}" alt="${room.name} - ${sectionLabels[categoryKey]}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                </div>
+            `;
+            imageIndex++;
+        });
+        return sectionHTML;
+    };
+    
+    // Add cover section
     if (coverImage) {
-        thumbnailsHTML += `
-            <div class="thumbnail-item${mainImage === coverImage ? ' active' : ''}" onclick="changeGalleryImage(this, '${coverImage}')">
-                <img src="${coverImage}" alt="${room.name} - Cover" onerror="this.parentElement.style.display='none'">
-            </div>`;
+        thumbnailsHTML += createThumbnailSection([coverImage], 'cover');
     }
     
-    // Add gallery images as thumbnails
-    galleryImages.forEach((imgUrl, index) => {
-        const isActive = (index === 0 && !coverImage) || (mainImage === imgUrl) ? ' active' : '';
-        thumbnailsHTML += `
-            <div class="thumbnail-item${isActive}" onclick="changeGalleryImage(this, '${imgUrl}')">
-                <img src="${imgUrl}" alt="${room.name} - ${index + 1}" onerror="this.parentElement.style.display='none'">
-            </div>`;
-    });
+    // Add categorized sections
+    thumbnailsHTML += createThumbnailSection(bedroomImages, 'bedroom');
+    thumbnailsHTML += createThumbnailSection(bathroomImages, 'bathroom');
+    thumbnailsHTML += createThumbnailSection(exteriorImages, 'exterior');
     
-    // Create gallery modal HTML
+    // Fallback to gallery images if no categorized images
+    if (!coverImage && bedroomImages.length === 0 && bathroomImages.length === 0 && exteriorImages.length === 0) {
+        thumbnailsHTML += createThumbnailSection(galleryImages, 'room');
+    }
+    
+    // Create gallery modal HTML with main image + thumbnails layout
     const modalHTML = `
         <div class="gallery-modal" onclick="closeRoomGallery(event)">
             <div class="gallery-container" onclick="event.stopPropagation()">
                 <button class="gallery-close" onclick="closeRoomGallery()">&times;</button>
                 <h2 class="gallery-title">${room.name}</h2>
                 <div class="gallery-grid">
-                    <div class="gallery-image-main">
-                        <img id="gallery-main-image" src="${mainImage}" alt="${room.name}" onerror="this.style.display='none'">
+                    <div class="gallery-image-main" onclick="openFullscreenImage(document.getElementById('gallery-main-image').src, '${room.name}')">
+                        <img id="gallery-main-image" src="${mainImage}" alt="${room.name}">
                     </div>
                     <div class="gallery-thumbnails">
                         ${thumbnailsHTML}
@@ -360,6 +394,39 @@ function openRoomGallery(roomId) {
     const modal = document.createElement('div');
     modal.innerHTML = modalHTML;
     document.body.appendChild(modal.firstElementChild);
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Open fullscreen image viewer
+ */
+function openFullscreenImage(imageSrc, imageAlt) {
+    const fullscreenHTML = `
+        <div class="fullscreen-viewer" onclick="closeFullscreenImage(event)">
+            <button class="fullscreen-close" onclick="closeFullscreenImage()">&times;</button>
+            <img src="${imageSrc}" alt="${imageAlt}" onclick="event.stopPropagation()">
+        </div>
+    `;
+    
+    // Remove existing fullscreen viewer if any
+    const existing = document.querySelector('.fullscreen-viewer');
+    if (existing) existing.remove();
+    
+    const viewer = document.createElement('div');
+    viewer.innerHTML = fullscreenHTML;
+    document.body.appendChild(viewer.firstElementChild);
+}
+
+/**
+ * Close fullscreen image viewer
+ */
+function closeFullscreenImage(event) {
+    if (!event || event.target.classList.contains('fullscreen-viewer')) {
+        const viewer = document.querySelector('.fullscreen-viewer');
+        if (viewer) viewer.remove();
+    }
 }
 
 /**
@@ -372,14 +439,19 @@ function closeRoomGallery(event) {
         if (modal) {
             modal.remove();
         }
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
     }
 }
 
 /**
- * Change gallery main image
+ * Change gallery main image (legacy support)
  */
 function changeGalleryImage(element, imageSrc) {
-    document.getElementById('gallery-main-image').src = imageSrc;
+    const mainImage = document.getElementById('gallery-main-image');
+    if (mainImage) {
+        mainImage.src = imageSrc;
+    }
     document.querySelectorAll('.thumbnail-item').forEach(item => {
         item.classList.remove('active');
     });
@@ -626,6 +698,22 @@ document.addEventListener('click', function(e) {
 // Close modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
+        // Close fullscreen viewer first if open
+        const fullscreenViewer = document.querySelector('.fullscreen-viewer');
+        if (fullscreenViewer) {
+            fullscreenViewer.remove();
+            return;
+        }
+        
+        // Then close gallery modal if open
+        const galleryModal = document.querySelector('.gallery-modal');
+        if (galleryModal) {
+            galleryModal.remove();
+            document.body.style.overflow = 'auto';
+            return;
+        }
+        
+        // Finally close calendar modal
         closeCalendarModal();
     }
 });
