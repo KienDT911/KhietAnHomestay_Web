@@ -242,7 +242,8 @@ def convert_room_for_api(room):
         'updated_at': str(room.get('updated_at', '')) if room.get('updated_at') else None,
         'coverImage': cover_image,
         'galleryImages': gallery_images,
-        'categorizedImages': categorized_images
+        'categorizedImages': categorized_images,
+        'promotion': room.get('promotion', None)
     }
     return api_room
 

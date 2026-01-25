@@ -208,6 +208,9 @@ function displayRoomsFromAPI() {
     roomsGrid.innerHTML = '';
 
     rooms.forEach(room => {
+        // Debug: log promotion data
+        console.log(`Room ${room.name}: promotion =`, room.promotion);
+        
         const amenitiesHtml = room.amenities
             ? room.amenities.map(a => `<span class="amenity">• ${a}</span>`).join('')
             : '';
@@ -237,7 +240,13 @@ function displayRoomsFromAPI() {
                     ${amenitiesHtml}
                 </div>
                 <div class="room-footer">
-                    <span class="room-price">${formatPrice(room.price)}</span>
+                    <div class="price-container">
+                        ${room.promotion && room.promotion.active 
+                            ? `<span class="room-price-original">${formatPrice(room.price)}</span>
+                               <span class="room-price-discount">${formatPrice(room.promotion.discountPrice)}</span>`
+                            : `<span class="room-price">${formatPrice(room.price)}</span>`
+                        }
+                    </div>
                     <span class="room-capacity">👤 ${room.persons || room.capacity} ${guestsText}</span>
                 </div>
                 <button class="btn-secondary view-calendar-btn" onclick="openCalendarModal('${room.room_id}')">
